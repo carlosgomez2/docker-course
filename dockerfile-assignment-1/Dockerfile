@@ -16,16 +16,31 @@
 
 # Instructions from the app developer
 # - you should use the 'node' official image, with the alpine 6.x branch
+FROM node:6.14.4-alpine
 # - this app listens on port 3000, but the container should launch on port 80
+EXPOSE 3000
   #  so it will respond to http://localhost:80 on your computer
 # - then it should use alpine package manager to install tini: 'apk add --update tini'
+RUN apk add --update tini \
+  && mkdir -p /usr/src/app 
 # - then it should create directory /usr/src/app for app files with 'mkdir -p /usr/src/app'
 # - Node uses a "package manager", so it needs to copy in package.json file
+WORKDIR /usr/src/app
+COPY package.json /usr/src/app
 # - then it needs to run 'npm install' to install dependencies from that file
+RUN npm i \
 # - to keep it clean and small, run 'npm cache clean --force' after above
+  && npm cache clean --force
 # - then it needs to copy in all files from current directory
+COPY . .
 # - then it needs to start container with command '/sbin/tini -- node ./bin/www'
+CMD ["/sbin/tini", "--", "node", "./bin/www"]
 # - in the end you should be using FROM, RUN, WORKDIR, COPY, EXPOSE, and CMD commands
+
+# Solved:
+# build container: sudo docker build . -t dockerfile-assignment-1
+# run container: sudo docker container run -p 80:3000 --rm dockerfile-assignment-1
+# browse to localhost:80
 
 # Bonus Extra Credit
 # this will not have you setting up a complete image useful for local development, test, and prod
