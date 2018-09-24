@@ -1,20 +1,28 @@
 version: '2'
 
 services:
+  # Drupal container 
   drupal: 
     image: drupal:8
     ports:
       - '8080:80'
     volumes:
-      - /var/www/html/modules
-      - /var/www/html/profiles
-      - /var/www/html/themes
-      - /var/www/html/sites
+      - drupal-modules:/var/www/html/modules
+      - drupal-profiles:/var/www/html/profiles
+      - drupal-sites:/var/www/html/themes
+      - drupal-themes:/var/www/html/sites
     restart: always
 
+  # Postgres container
   postgres:
     image: postgres:10
     environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_USER: example
+      POSTGRES_PASSWORD: mypassword
+      # default POSTGRES_USER = postgres
 
+# Mount Volumes
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
